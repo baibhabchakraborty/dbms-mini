@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, logout_user, login_user, login_manager, LoginManager, current_user
+from flask.helpers import url_for
 
 #my database connections
 local_server = True
@@ -48,8 +49,19 @@ def signup():
         # print(srfid, email, dob)
 
         encpassword = generate_password_hash(dob)
+        user = User.query.filter_by(srfid = srfid).first()
+        emailUser = User.query.filter_by(email = email).first()
+
+        if user or emailUser:
+            flash("Email or SRFid is already taken!","warning")
+            return render_template("usersignup.html")
+
         new_user = db.engine.execute(f"INSERT INTO `user` (`srfid`, `email`, `dob`) VALUES ('{srfid}','{email}','{encpassword}')")
-        return 'USER ADDED'
+        user1 = User.query.filter_by(srfid = srfid).first()
+        
+        
+        flash("Signup Success! Now Please Login!", "success")
+        return render_template("userlogin.html")
     
     return render_template("usersignup.html")
 
@@ -60,7 +72,6 @@ def login():
         srfid = request.form.get('srf')
         dob = request.form.get('dob')
         user = User.query.filter_by(srfid = srfid).first()
-        print(user)
 
         if user and check_password_hash(user.dob, dob):
             login_user(user)
@@ -68,8 +79,15 @@ def login():
             return render_template("index.html")
         else:
             flash("Invalid Credentials!", "danger")
-            return render_template("userlogin.html")
+    return render_template("userlogin.html")
    
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Logout Successful","warning")
+    return redirect(url_for('login'))
     
 
 
