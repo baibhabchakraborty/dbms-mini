@@ -14,8 +14,8 @@
 
 
     <div class="col-md-4">
-        <form action="" method="post">
-
+        <form action="/signup" method="post">
+            {% include "message.html" %}
             <div class="form-group">       
                 <input type="text" class="form-control mt-2" placeholder="Enter the SRF ID" name="srf" required>
             </div>
@@ -30,7 +30,7 @@
             <br>
             <button type="submit" class="btn btn-info">Sign In</button>
         </form>
-        <br><a class="text-success" href="/userlogin">Click here to Log In.</a>
+        <br><a class="text-success" href="/login">Click here to Log In.</a>
     </div>
 
 
