@@ -1,9 +1,15 @@
-from flask import Flask, redirect, render_template, request, flash
+from flask import Flask, json,redirect,render_template,flash,request
+from flask.globals import request, session
+from flask.helpers import url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_required, logout_user, login_user, login_manager, LoginManager, current_user
-from flask.helpers import url_for
+from werkzeug.security import generate_password_hash,check_password_hash
+
+from flask_login import login_required,logout_user,login_user,login_manager,LoginManager,current_user
+
+from flask_mail import Mail
+import json
+
 
 #my database connections
 local_server = True
@@ -18,6 +24,9 @@ login_manager.login_view = 'login'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/databasename'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/covid'
 db = SQLAlchemy(app)
+
+with open('backend\config.json','r') as c:
+    params=json.load(c)["params"]
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -89,6 +98,15 @@ def logout():
     flash("Logout Successful","warning")
     return redirect(url_for('login'))
     
+
+@app.route("/admin", methods = ['POST','GET'])
+def admin():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        return render_template("addHosUser.html")
+    return render_template("admin.html")
+
 
 
 # testing whether the db is connected or not
