@@ -2,6 +2,8 @@
     "params":
     {
         "user" : "baibhab",
-        "password" : "baibhab1234"
+        "password" : "baibhab1234",
+        "gmail-user" : "baibhab.baishakhi@gmail.com", 
+        "gmail-password" : "baibhab1234"
     }
 }

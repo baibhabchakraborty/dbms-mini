@@ -16,6 +16,18 @@ local_server = True
 app = Flask(__name__)
 app.secret_key = "baibhab"
 
+with open('backend/config.json','r') as c:
+    params=json.load(c)["params"]
+
+app.config.update(
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = '465',
+    MAIL_USE_SSL = True, 
+    MAIL_USERNAME = params['gmail-user'],
+    MAIL_PASSWORD = params['gmail-password']
+)
+mail = Mail(app)
+
 #set login manager,getting unique user access
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -25,8 +37,10 @@ login_manager.login_view = 'login'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/covid'
 db = SQLAlchemy(app)
 
-with open('backend\config.json','r') as c:
-    params=json.load(c)["params"]
+
+
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -42,6 +56,12 @@ class User(UserMixin, db.Model):
     srfid = db.Column(db.String(20), unique = True)
     email = db.Column(db.String(100))
     dob = db.Column(db.String(1000))
+
+class Hospitaluser(UserMixin, db.Model):
+    hid = db.Column(db.Integer, primary_key = True)
+    hcode = db.Column(db.String(20))
+    email = db.Column(db.String(100))
+    password = db.Column(db.String(1000))
 
 @app.route("/")
 def home():
@@ -104,9 +124,38 @@ def admin():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        return render_template("addHosUser.html")
+
+        if(username == params['user'] and password == params['password']):
+            session['user'] = username
+            flash("login success", "info")
+            return render_template("addHosUser.html")
+        else:
+            flash("Invalid Credentials","warning")
+
     return render_template("admin.html")
 
+@app.route("/addHospitalUser", methods = ['POST','GET'])
+def hospitalUser():
+    if('user' in session and session['user'] == params['user']):
+        if request.method == 'POST':
+            hcode = request.form.get('hcode')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            # print(srfid, email, dob)
+
+            encpassword = generate_password_hash(password)
+            emailUser = Hospitaluser.query.filter_by(email = email).first()
+
+            if emailUser:
+                flash("Email is already taken!","warning")
+                return render_template("usersignup.html")
+            new_user = db.engine.execute(f"INSERT INTO `hospitaluser` (`hcode`, `email`, `password`) VALUES ('{hcode}','{email}','{encpassword}')")
+            mail.send_message("COVID CARE CENTER", sender = params['gmail-user'], recipients=[email], body=f"Welcome! Thanks for Choosing us! \n\n\n Your Login Credentials are: \n Email Address : {email}\n Password : {password} \n\n\n\n DO NOT SHARE YOUR PASSWORD WITH ANYONE\n\n Thank You!")
+            flash("Data sent and Inserted successfully!", "success")
+    else:
+        flash("Login and try again", "message")
+        return redirect("/admin")
+    return render_template("addHosUser.html")
 
 
 # testing whether the db is connected or not
@@ -120,4 +169,14 @@ def test():
         print(e)
         return 'MY DATABASE IS NOT CONNECTED'
 
+
+@app.route('/logoutadmin')
+@login_required
+def logoutadmin():
+    logout_user()
+    flash("Admin Logout Successful","warning")
+    return redirect('/admin')
+
+
 app.run(debug = True)
+
