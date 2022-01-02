@@ -58,7 +58,7 @@ class User(UserMixin, db.Model):
     dob = db.Column(db.String(1000))
 
 class Hospitaluser(UserMixin, db.Model):
-    hid = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     hcode = db.Column(db.String(20))
     email = db.Column(db.String(100))
     password = db.Column(db.String(1000))
@@ -109,6 +109,25 @@ def login():
         else:
             flash("Invalid Credentials!", "danger")
     return render_template("userlogin.html")
+
+
+@app.route("/hospitallogin", methods = ['POST','GET'])
+def hospitallogin():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = Hospitaluser.query.filter_by(email = email).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            flash("Login Success", "info")
+            return render_template("index.html")
+        else:
+            flash("Invalid Credentials!", "danger")
+            return render_template("hospitallogin.html")
+    
+    
+    return render_template("hospitallogin.html")
    
 
 @app.route('/logout')
