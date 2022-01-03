@@ -216,6 +216,10 @@ def logoutadmin():
 
 @app.route("/addhospitalinfo", methods = ['POST','GET'])
 def addhospitalinfo():
+    email = current_user.email
+    posts = Hospitaluser.query.filter_by(email = email).first()
+    code = posts.hcode
+    print(code)
     if request.method == 'POST':
         hcode = request.form.get('hcode')
         hname = request.form.get('hname')
