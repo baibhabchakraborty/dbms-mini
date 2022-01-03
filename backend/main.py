@@ -42,6 +42,8 @@ db = SQLAlchemy(app)
 
 
 
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -63,10 +65,25 @@ class Hospitaluser(UserMixin, db.Model):
     email = db.Column(db.String(100))
     password = db.Column(db.String(1000))
 
+class Hospitaldata(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    hcode = db.Column(db.String(20), unique = True)
+    hname = db.Column(db.Integer)
+    normalbed = db.Column(db.Integer)
+    hicubed = db.Column(db.Integer)
+    icubed = db.Column(db.Integer)
+    vbed = db.Column(db.Integer)
+
+
+
+
+
+
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
-
 
 
 @app.route("/signup", methods = ['POST','GET'])
@@ -161,7 +178,7 @@ def hospitalUser():
             email = request.form.get('email')
             password = request.form.get('password')
             # print(srfid, email, dob)
-
+            hcode = hcode.upper()
             encpassword = generate_password_hash(password)
             emailUser = Hospitaluser.query.filter_by(email = email).first()
 
@@ -169,7 +186,7 @@ def hospitalUser():
                 flash("Email is already taken!","warning")
                 return render_template("usersignup.html")
             new_user = db.engine.execute(f"INSERT INTO `hospitaluser` (`hcode`, `email`, `password`) VALUES ('{hcode}','{email}','{encpassword}')")
-            mail.send_message("COVID CARE CENTER", sender = params['gmail-user'], recipients=[email], body=f"Welcome! Thanks for Choosing us! \n\n\n Your Login Credentials are: \n Email Address : {email}\n Password : {password} \n\n\n\n DO NOT SHARE YOUR PASSWORD WITH ANYONE\n\n Thank You!")
+            mail.send_message("COVID CARE CENTER", sender = params['gmail-user'], recipients=[email], body=f"Welcome! Thanks for Choosing us! \n\n\n Your Login Credentials are: \n Email Address : {email}\n Password : {password} \n\nHospital Code : {hcode} \n\n\n\n DO NOT SHARE YOUR PASSWORD WITH ANYONE\n\n Thank You!")
             flash("Data sent and Inserted successfully!", "success")
     else:
         flash("Login and try again", "message")
@@ -195,6 +212,33 @@ def logoutadmin():
     logout_user()
     flash("Admin Logout Successful","warning")
     return redirect('/admin')
+
+
+@app.route("/addhospitalinfo", methods = ['POST','GET'])
+def addhospitalinfo():
+    if request.method == 'POST':
+        hcode = request.form.get('hcode')
+        hname = request.form.get('hname')
+        nbed = request.form.get('normalbed')
+        hbed = request.form.get('hicubeds')
+        ibed = request.form.get('icubeds')
+        vbed = request.form.get('ventbeds')
+        hcode = hcode.upper()
+
+        huser = Hospitaluser.query.filter_by(hcode = hcode).first()
+        hduser = Hospitaldata.query.filter_by(hcode = hcode).first()
+        if hduser:
+            flash("Data is already added, you may update it!", "primary")
+            return render_template("hospitaldata.html")
+        if huser:
+            db.engine.execute(f"INSERT INTO `hospitaldata` (`hcode`, `hname`, `normalbed`, `hicubed`, `icubed`, `vbed`) VALUES ('{hcode}','{hname}','{nbed}','{hbed}','{ibed}','{vbed}')")
+            flash("Data is Added!", "success")
+        else:
+            flash("Hospital Code doesn't exist!", "warning")
+    
+    return render_template("hospitaldata.html")
+
+
 
 
 app.run(debug = True)
