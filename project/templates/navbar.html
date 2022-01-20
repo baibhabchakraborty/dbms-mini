@@ -10,7 +10,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="static/assets/img/logo.png" rel="icon">
+  <link href="static/assets/img/favicon.png" rel="icon">
   <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
@@ -28,8 +28,9 @@
 
   <!-- Template Main CSS File -->
   <link href="static/assets/css/style.css" rel="stylesheet">
-
   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <body>
@@ -41,7 +42,7 @@
         <i class="bi bi-clock"></i> 24*7 Available
       </div>
       <div class="d-flex align-items-center">
-        <i class="bi bi-phone"></i> Call us now +91 5589 5548 55
+        <i class="bi bi-phone"></i> Call us now +919986786453
       </div>
     </div>
   </div>
@@ -57,55 +58,61 @@
       <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
           <li><a class="nav-link scrollto " href="/">Home</a></li>
-          
-          <li><a class="nav-link scrollto" href="#departments">Patient Details</a></li>
-          <li><a class="nav-link scrollto" href="#doctors">Available Beds</a></li>
-          <li class="dropdown"><a href="#"><span>Sign In</span> <i class="bi bi-chevron-down"></i></a>
+
+          <li><a class="nav-link scrollto" href="/pdetails">Patients Details</a></li>
+          <li><a class="nav-link scrollto" href="/slotbooking">Available Beds</a></li>
+
+{% if current_user.is_authenticated  and current_user.hcode %}
+
+          <li class="dropdown"><a href="/login"><span>Welcome {{current_user.email}}</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+
+              <li><a href="/addhospitalinfo">Add Hospital Data</a></li>
+              <li><a href="/logout">Logout</a></li>
+      
+           
+            </ul>
+          </li>
+{% elif current_user.is_authenticated and current_user.srfid %}
+           <li class="dropdown"><a href="/login"><span>Welcome {{current_user.email}}</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+
+              <li><a href="/slotbooking">Book Slot</a></li>
+              <li><a href="/logout">Logout</a></li>
+      
+           
+            </ul>
+          </li>
+{% else %}
+          <li class="dropdown"><a href="/login"><span>Sign In</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="/login">User Login</a></li>
               <li><a href="/hospitallogin">Hospital Login</a></li>
               <li><a href="/admin">Admin Login</a></li>
+           
             </ul>
           </li>
+
+{% endif %}
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
 
-      <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Bed Booking SLot!</span> Book Now!</a>
+      <a href="/slotbooking" class="appointment-btn scrollto"><span class="d-none d-md-inline">Bed Booking Slot</span> Book Now</a>
 
     </div>
   </header><!-- End Header -->
 
-  <!-- ======= Hero Section ======= -->
-  <section id="hero">
-    <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
 
-      <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
 
-      <div class="carousel-inner" role="listbox">
 
-        <!-- Slide 1 -->
-        <div class="carousel-item active" style="background-image: url(static/assets/img/bcg.jpg)">
-          <div class="container">
-            {% block form %}
-            {% endblock form %}
-          </div>
-        </div>
-      </div>
+  {% block body %}
+  
+  
+  {% endblock body %}
 
-      <a class="carousel-control-prev" href="#heroCarousel" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-      </a>
 
-      <a class="carousel-control-next" href="#heroCarousel" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-      </a>
-
-    </div>
-  </section><!-- End Hero -->
-
-    <main id = "main">
 
   <div id="preloader"></div>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
