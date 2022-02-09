@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2021 at 03:47 PM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.2.29
+-- Generation Time: Jan 20, 2022 at 07:38 AM
+-- Server version: 10.4.19-MariaDB
+-- PHP Version: 8.0.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `covid`
+-- Database: `covidf`
 --
 
 -- --------------------------------------------------------
@@ -43,8 +43,8 @@ CREATE TABLE `bookingpatient` (
 --
 
 INSERT INTO `bookingpatient` (`id`, `srfid`, `bedtype`, `hcode`, `spo2`, `pname`, `pphone`, `paddress`) VALUES
-(3, 'KA20210011', 'ICUBed', 'MAT123', 85, 'ARK', '9986786453', 'BANGALORE'),
-(4, 'KA20210022', 'ICUBed', 'BBH01', 92, 'kartik', '8088131784', 'banaglore ');
+(5, '1111', 'ICUBed', '222222', 78, 'Baibhab Chakraborty', '2233445566', 'abc street'),
+(6, '2222', 'NormalBed', '333333', 79, 'Aishwarya Iyer', '22667567546', 'def street');
 
 -- --------------------------------------------------------
 
@@ -67,7 +67,8 @@ CREATE TABLE `hospitaldata` (
 --
 
 INSERT INTO `hospitaldata` (`id`, `hcode`, `hname`, `normalbed`, `hicubed`, `icubed`, `vbed`) VALUES
-(3, 'MAT123', 'Matha Hospital', 40, 4, 4, 1);
+(4, '222222 ', 'Kurukshetra Hospital', 5, 2, 6, 3),
+(5, '333333 ', 'Nalanda Hospital', 4, 5, 5, 5);
 
 --
 -- Triggers `hospitaldata`
@@ -103,8 +104,8 @@ CREATE TABLE `hospitaluser` (
 --
 
 INSERT INTO `hospitaluser` (`id`, `hcode`, `email`, `password`) VALUES
-(7, 'BBH01', 'aneesrehman95567@gmail.com', 'pbkdf2:sha256:260000$im6PllE9qrd0asQY$3e62fcb9697d2b048acd83cb3658bac8ae5edb5ff58086699d134fb0ed41d788'),
-(9, 'MAT123', 'arkprocoder@gmail.com', 'pbkdf2:sha256:260000$CPDXGkSY1zXsarEA$fdbec84d1b2c32e521c75f51bb917daaa4f7a53e567e4478d23ba944c53b1177');
+(12, '222222', 'baibhab.baishakhi@gmail.com', 'pbkdf2:sha256:260000$h1zOHaDHeXShJQV0$537c9c059dd04235a2d686ca77739f7ec93ee27000bbed3a79113c2b8683bbce'),
+(13, '333333', 'baisahkhi.baibhab@gmail.com', 'pbkdf2:sha256:260000$pYyH5Aog6JhzRwy5$59a9b46895202ff730424b7c085bc2de43233f6d75232663780e2e27bcbcb810');
 
 -- --------------------------------------------------------
 
@@ -116,14 +117,6 @@ CREATE TABLE `test` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `test`
---
-
-INSERT INTO `test` (`id`, `name`) VALUES
-(1, 'anees'),
-(2, 'rehman');
 
 -- --------------------------------------------------------
 
@@ -147,8 +140,10 @@ CREATE TABLE `trig` (
 --
 
 INSERT INTO `trig` (`id`, `hcode`, `normalbed`, `hicubed`, `icubed`, `vbed`, `querys`, `date`) VALUES
-(1, 'BBH01', 50, 9, 2, 1, ' UPDATED', '2021-11-26'),
-(2, 'BBH01', 50, 9, 2, 1, ' DELETED', '2021-11-26');
+(4, '222222 ', 5, 2, 7, 3, ' INSERTED', '2022-01-15'),
+(5, '222222 ', 5, 2, 6, 3, ' UPDATED', '2022-01-15'),
+(6, '333333 ', 5, 5, 5, 5, ' INSERTED', '2022-01-15'),
+(7, '333333 ', 4, 5, 5, 5, ' UPDATED', '2022-01-15');
 
 -- --------------------------------------------------------
 
@@ -168,8 +163,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `srfid`, `email`, `dob`) VALUES
-(9, 'KA20210011', 'ark@gmail.com', 'pbkdf2:sha256:260000$AhqgDCims0G1LSEi$ada839cc254cd79f9708e777ae02d83cec210677c342e01c3affd8c1358775d9'),
-(10, 'KA20210022', 'rehman@gmail.com', 'pbkdf2:sha256:260000$74GEC2qyVtOiPl5s$2a95f811bbd5a50eaac0404fb8fa3682b6c3b67f4493037134c9672393136694');
+(12, '1111', 'baishakhi.baibhab@gmail.com', 'pbkdf2:sha256:260000$9NhZFOJNY1u1OyWI$c5e2d0d07fae7f344b23ecd3c062017758fc4a46dbecbf45edd5ce13f3191354'),
+(13, '2222', 'baibhab.baishakhi@gmail.com', 'pbkdf2:sha256:260000$BYvflQ0LYoscwfKp$baafffc5dfb137456aab588a4744fbf5cea2d1f1647743d65d163ec9eb9222cb');
 
 --
 -- Indexes for dumped tables
@@ -222,19 +217,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `bookingpatient`
 --
 ALTER TABLE `bookingpatient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `hospitaldata`
 --
 ALTER TABLE `hospitaldata`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `hospitaluser`
 --
 ALTER TABLE `hospitaluser`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `test`
@@ -246,13 +241,13 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT for table `trig`
 --
 ALTER TABLE `trig`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
